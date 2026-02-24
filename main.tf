@@ -31,11 +31,11 @@ resource "aws_subnet" "private" {
 # creating internet gateway and route table
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.myvpc.id
 }
 
 resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.myvpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -89,6 +89,49 @@ resource "aws_network_acl_association" "public_nacl" {
 resource "aws_network_acl_association" "private_nacl" {
   subnet_id      = aws_subnet.private.id
   network_acl_id = aws_network_acl.main_nacl.id
+}
+
+# creating two ec2 instance
+
+resource "aws_security_group" "allow_internal" {
+  vpc_id = aws_vpc.myvpc.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "public_ec2" {
+  ami                    = "ami-09256c524fab91d36"
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.allow_internal.id]
+  key_name               = "your-key-name"
+
+  tags = {
+    Name = "public-ec2"
+  }
+}
+
+resource "aws_instance" "private_ec2" {
+  ami                    = "ami-09256c524fab91d36"
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.private.id
+  vpc_security_group_ids = [aws_security_group.allow_internal.id]
+
+  tags = {
+    Name = "private-ec2"
+  }
 }
 
 
