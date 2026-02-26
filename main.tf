@@ -13,11 +13,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.myvpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-<<<<<<< HEAD
-  availability_zone       = "ap-south-1a"
-=======
   availability_zone       = "us-east-2"
->>>>>>> dad4c68 (terrform error correction)
   tags = {
     Name = "public-subnet"
   }
@@ -26,11 +22,8 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.myvpc.id
   cidr_block        = "10.0.2.0/24"
-<<<<<<< HEAD
-  availability_zone = "ap-south-1a"
-=======
   availability_zone = "us-east-2"
->>>>>>> dad4c68 (terrform error correction)
+
   tags = {
     Name = "private-subnet"
   }
@@ -142,10 +135,3 @@ resource "aws_instance" "private_ec2" {
   }
 }
 
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> dad4c68 (terrform error correction)
